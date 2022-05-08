@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 84affe23f6ee
+Revision ID: c2a4c6139c11
 Revises: 
-Create Date: 2022-05-06 12:22:53.778791
+Create Date: 2022-05-08 12:09:52.225929
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '84affe23f6ee'
+revision = 'c2a4c6139c11'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -76,6 +76,25 @@ def upgrade():
     sa.ForeignKeyConstraint(['user_id'], ['ab_user.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
+    op.create_table('docker',
+    sa.Column('created_on', sa.DateTime(), nullable=True),
+    sa.Column('changed_on', sa.DateTime(), nullable=True),
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('project_id', sa.Integer(), nullable=False),
+    sa.Column('describe', sa.String(length=200), nullable=True),
+    sa.Column('base_image', sa.String(length=200), nullable=True),
+    sa.Column('target_image', sa.String(length=200), nullable=True),
+    sa.Column('last_image', sa.String(length=200), nullable=True),
+    sa.Column('need_gpu', sa.Boolean(), nullable=True),
+    sa.Column('consecutive_build', sa.Boolean(), nullable=True),
+    sa.Column('expand', sa.Text(length=65536), nullable=True),
+    sa.Column('created_by_fk', sa.Integer(), nullable=True),
+    sa.Column('changed_by_fk', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['changed_by_fk'], ['ab_user.id'], ),
+    sa.ForeignKeyConstraint(['created_by_fk'], ['ab_user.id'], ),
+    sa.ForeignKeyConstraint(['project_id'], ['project.id'], ),
+    sa.PrimaryKeyConstraint('id')
+    )
     op.create_table('job_template',
     sa.Column('created_on', sa.DateTime(), nullable=True),
     sa.Column('changed_on', sa.DateTime(), nullable=True),
@@ -94,6 +113,32 @@ def upgrade():
     sa.Column('privileged', sa.Boolean(), nullable=True),
     sa.Column('accounts', sa.String(length=100), nullable=True),
     sa.Column('demo', sa.Text(), nullable=True),
+    sa.Column('expand', sa.Text(length=65536), nullable=True),
+    sa.Column('created_by_fk', sa.Integer(), nullable=True),
+    sa.Column('changed_by_fk', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['changed_by_fk'], ['ab_user.id'], ),
+    sa.ForeignKeyConstraint(['created_by_fk'], ['ab_user.id'], ),
+    sa.ForeignKeyConstraint(['project_id'], ['project.id'], ),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('name')
+    )
+    op.create_table('notebook',
+    sa.Column('created_on', sa.DateTime(), nullable=True),
+    sa.Column('changed_on', sa.DateTime(), nullable=True),
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('project_id', sa.Integer(), nullable=False),
+    sa.Column('name', sa.String(length=200), nullable=True),
+    sa.Column('describe', sa.Text(), nullable=True),
+    sa.Column('namespace', sa.String(length=200), nullable=True),
+    sa.Column('images', sa.String(length=200), nullable=True),
+    sa.Column('ide_type', sa.String(length=200), nullable=True),
+    sa.Column('working_dir', sa.String(length=200), nullable=True),
+    sa.Column('volume_mount', sa.String(length=400), nullable=True),
+    sa.Column('node_selector', sa.String(length=200), nullable=True),
+    sa.Column('image_pull_policy', sa.Enum('Always', 'IfNotPresent'), nullable=True),
+    sa.Column('resource_memory', sa.String(length=100), nullable=True),
+    sa.Column('resource_cpu', sa.String(length=100), nullable=True),
+    sa.Column('resource_gpu', sa.String(length=100), nullable=True),
     sa.Column('expand', sa.Text(length=65536), nullable=True),
     sa.Column('created_by_fk', sa.Integer(), nullable=True),
     sa.Column('changed_by_fk', sa.Integer(), nullable=True),
@@ -203,7 +248,9 @@ def downgrade():
     op.drop_table('run')
     op.drop_table('project_user')
     op.drop_table('pipeline')
+    op.drop_table('notebook')
     op.drop_table('job_template')
+    op.drop_table('docker')
     op.drop_table('user_attribute')
     op.drop_table('project')
     op.drop_table('logs')
