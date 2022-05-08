@@ -758,11 +758,11 @@ class Pipeline_ModelView_Base():
         # 限制提醒
         if item.schedule_type=='crontab':
             if not item.project.node_selector:
-                flash('无法保障公共集群的稳定性，定时任务请选择专门的日更集群项目组','warning')
+                print('无法保障公共集群的稳定性，定时任务请选择专门的日更集群项目组','warning')
             else:
                 org = item.project.node_selector.replace('org=','')
                 if not org or org=='public':
-                    flash('无法保障公共集群的稳定性，定时任务请选择专门的日更集群项目组','warning')
+                    print('无法保障公共集群的稳定性，定时任务请选择专门的日更集群项目组','warning')
 
 
     def pre_update_get(self,item):

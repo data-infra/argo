@@ -162,7 +162,7 @@ def delete_notebook(task):
             notebooks = dbsession.query(Notebook).filter(Notebook.changed_on < alert_time).all()   # 需要删除或者需要通知续期的notebook
             for notebook in notebooks:
                 if notebook.changed_on < (datetime.datetime.now() - datetime.timedelta(seconds=timeout)):
-                    k8s_client = K8s(notebook.project.cluster['KUBECONFIG'])
+                    k8s_client = K8s(notebook.project.cluster.get('KUBECONFIG',''))
                     vscode_pods = k8s_client.get_pods(namespace=namespace,pod_name=notebook.name)
                     if vscode_pods:
                         vscode_pod=vscode_pods[0]
@@ -734,7 +734,7 @@ def watch_gpu(task):
     clusters = conf.get('CLUSTERS', {})
     for cluster_name in clusters:
         cluster = clusters[cluster_name]
-        k8s_client = K8s(cluster['KUBECONFIG'])
+        k8s_client = K8s(cluster.get('KUBECONFIG',''))
 
         all_gpu_pods=k8s_client.get_uesd_gpu(namespaces=['pipeline','katib','jupyter','service'])
 
@@ -763,7 +763,7 @@ def adjust_node_resource(task):
     clusters = conf.get('CLUSTERS', {})
     for cluster_name in clusters:
         cluster = clusters[cluster_name]
-        k8s_client = K8s(cluster['KUBECONFIG'])
+        k8s_client = K8s(cluster.get('KUBECONFIG',''))
         all_node = k8s_client.get_node()
         all_node_json = {}
         pending_pods={}
