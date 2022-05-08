@@ -650,7 +650,7 @@ HUBSECRET = ['hubsecret']
 # 私有仓库的组织名，用户在线构建的镜像自动推送这个组织下面
 REPOSITORY_ORG='ai.tencentmusic/tme-public/'
 # notebook每个pod使用的用户账号
-JUPYTER_ACCOUNTS='jupyter-user'
+JUPYTER_ACCOUNTS=''
 HUBSECRET_NAMESPACE=[PIPELINE_NAMESPACE,NOTEBOOK_NAMESPACE]
 
 # notebook使用的镜像

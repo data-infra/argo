@@ -354,7 +354,7 @@ class Notebook_ModelView_Base():
                 "USERNAME": notebook.created_by.username
             },
             privileged=None,
-            accounts=conf.get('JUPYTER_ACCOUNTS'),
+            accounts=conf.get('JUPYTER_ACCOUNTS',''),
             username=notebook.created_by.username
         )
         k8s_client.create_service(

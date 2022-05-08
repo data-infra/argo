@@ -66,5 +66,3 @@ spec:
   selector:
     matchLabels:
       jupyter-pvname: jupyter-kubeflow-user-workspace
-
-
